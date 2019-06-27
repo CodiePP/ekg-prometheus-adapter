@@ -21,12 +21,14 @@ import qualified Data.Map.Strict as Map
 import           Data.Monoid
 import Lens.Micro.TH
 import qualified Data.Text as T
+import qualified Data.Text.IO as T
 import qualified System.Metrics as EKG
 import qualified System.Metrics.Prometheus.Metric.Counter as Counter
 import qualified System.Metrics.Prometheus.Metric.Gauge as Gauge
 import qualified System.Metrics.Prometheus.MetricId as Prometheus
 import qualified System.Metrics.Prometheus.Registry as Prometheus
 import           System.Metrics.Prometheus.RegistryT (RegistryT(..))
+import           Text.Read (readMaybe)
 
 --------------------------------------------------------------------------------
 data AdapterOptions = AdapterOptions {
@@ -85,7 +87,14 @@ mkMetric AdapterOptions{..} (oldRegistry, mmap) (key, value) = do
      (gauge, newRegistry) <- Prometheus.registerGauge k _labels oldRegistry
      Gauge.set (fromIntegral g) gauge
      return $! (newRegistry, Map.insert k (G gauge) $! mmap)
-   EKG.Label _   -> return $! (oldRegistry, mmap)
+   EKG.Label l   ->
+     case readMaybe (T.unpack l) of
+      Just x  -> do
+        (gauge, newRegistry) <- Prometheus.registerGauge k _labels oldRegistry
+        Gauge.set x gauge
+        return $! (newRegistry, Map.insert k (G gauge) $! mmap)
+      Nothing ->
+        return $! (oldRegistry, mmap)
    EKG.Distribution _ -> return $! (oldRegistry, mmap)
 
 --------------------------------------------------------------------------------
