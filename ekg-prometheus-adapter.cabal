@@ -1,8 +1,8 @@
 name:                ekg-prometheus-adapter
-version:             0.1.0.4
+version:             0.2.0.1
 synopsis:            Easily expose your EKG metrics to Prometheus
-description:         Please see README.md
-homepage:            https://github.com/adinapoli/ekg-prometheus-adapter#readme
+description:         Forked from original implementation by Alfredo Di Napoli on https://github.com/adinapoli/ekg-prometheus-adapter
+homepage:            https://github.com/CodiePP/ekg-prometheus-adapter
 license:             MIT
 license-file:        LICENSE
 author:              Alfredo Di Napoli
@@ -37,4 +37,4 @@ test-suite tests
 
 source-repository head
   type:     git
-  location: https://github.com/adinapoli/ekg-prometheus-adapter
+  location: https://github.com/CodiePP/ekg-prometheus-adapter
