@@ -87,14 +87,7 @@ mkMetric AdapterOptions{..} (oldRegistry, mmap) (key, value) = do
      (gauge, newRegistry) <- Prometheus.registerGauge k _labels oldRegistry
      Gauge.set (fromIntegral g) gauge
      return $! (newRegistry, Map.insert k (G gauge) $! mmap)
-   EKG.Label l   ->
-     case readMaybe (T.unpack l) of
-      Just x  -> do
-        (gauge, newRegistry) <- Prometheus.registerGauge k _labels oldRegistry
-        Gauge.set x gauge
-        return $! (newRegistry, Map.insert k (G gauge) $! mmap)
-      Nothing ->
-        return $! (oldRegistry, mmap)
+   EKG.Label _ -> return $! (oldRegistry, mmap)
    EKG.Distribution _ -> return $! (oldRegistry, mmap)
 
 --------------------------------------------------------------------------------
